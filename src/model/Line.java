@@ -1,3 +1,5 @@
+package model;
+
 public class Line {
     private String name;
     

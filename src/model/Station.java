@@ -1,3 +1,5 @@
+package model;
+
 public class Station {
     private final String name;
 

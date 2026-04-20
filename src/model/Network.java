@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,4 +74,22 @@ public class Network {
         }
         return lines.get(name);
     }
+
+    /**
+     * Return all stations in the network.
+     * @return a collection of all stations in the network.
+     */
+    public Collection<Station> getAllStations() {
+        return stations.values();
+    }
+
+    /**
+     * Return a Station object with the given name.
+     * @param name the name of the station.
+     * @return the Station object, or null if the station is not in the network.
+     */
+    public Station getStation(String name) {
+        return stations.get(name.trim());
+    }
+
 }

@@ -61,7 +61,7 @@ public class Route {
 
         return total;
     }
-    
+
     /**
      * Return the route represented as a String.
      */
@@ -72,6 +72,7 @@ public class Route {
         
         for (Edge edge : edges) {
             if (previousLine != null && !edge.getLine().equals(previousLine)) {
+                string = string + edge.getSource().getName() + " on " + previousLine.getName() + " line" + "\n";
                 string = string + "**  Change Line to " + edge.getLine().getName() + " line ***" + "\n";
             }
 

@@ -4,8 +4,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.IOException;
 
+import cli.Cli;
 import model.Network;
 import parsing.Parser;
+
 
 /**
  * Entry point for the program.
@@ -18,7 +20,9 @@ public class Main {
 
         try {
             Parser.load(csv, network);
-            System.out.println("Network loaded successfully");
+            Cli cli = new Cli(network);
+            cli.run();
+
         } catch (IOException e) {
             System.err.println("Failed to load CSV: " + e.getMessage());
             System.exit(1);

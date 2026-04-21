@@ -30,4 +30,24 @@ public class Station {
     public String toString() {
         return "Station(" + name + ")";
     }
+
+    /**
+     * Two Station objects are considered equal if they have the same name.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Station station = (Station) o;
+        return name.equals(station.name);
+    }
+
+    /**
+     * Return a hash code based on the station name.
+     */
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }

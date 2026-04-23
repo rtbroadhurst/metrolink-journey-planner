@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 import model.Network;
 import model.Station;
+import routing.Route;
+import routing.ShortestTimeRouter;
 
 /**
  * Command Line Interface for the program.
@@ -27,7 +29,15 @@ public class Cli {
         Station start = getStation("Enter start station: ");
         Station end = getStation("Enter end station: ");
 
+        ShortestTimeRouter shortestTimeRouter = new ShortestTimeRouter(network);
+        Route route = shortestTimeRouter.findRoute(start, end);
 
+        if (route == null) {
+            System.out.println("No route found");
+            return;
+        }
+
+        System.out.println(route);
     }
 
     /**

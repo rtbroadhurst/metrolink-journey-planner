@@ -36,40 +36,40 @@ public class ShortestTimeRouter {
      * @return the shortest-time Route, or null if unreachable.
      */
     public Route findRoute(Station start, Station end) {
-        Map<State, Double> bestTime = new HashMap<>();
+        Map<State, PQEntry> best = new HashMap<>();
         Map<State, PreviousStep> previous = new HashMap<>();
         PriorityQueue<PQEntry> queue = new PriorityQueue<>();
 
         State startState = new State(start, null);
-        bestTime.put(startState, 0.0);
-        queue.add(new PQEntry(0.0, startState));
+        PQEntry startEntry = new PQEntry(0.0, 0, startState);
+        best.put(startState, startEntry);
+        queue.add(startEntry);
 
         while (!queue.isEmpty()) {
             PQEntry entry = queue.poll();
             State current = entry.state;
-            double currentTime = entry.time;
 
             if (current.station.equals(end)) {
                 return reconstruct(current, previous);
             }
 
-            if (currentTime > bestTime.get(current)) {
+            if (entry.compareTo(best.get(current)) > 0) {
                 continue;
             }
 
             for (Edge edge : network.getEdges(current.station)) {
-                double stepCost = edge.getTime();
-                if (current.arrivedOn != null && !current.arrivedOn.equals(edge.getLine())) {
-                    stepCost += CHANGE_PENALTY_MINS;
-                }
+                boolean isChange = current.arrivedOn != null && !current.arrivedOn.equals(edge.getLine());
+                double newTime = entry.time + edge.getTime() + (isChange ? CHANGE_PENALTY_MINS : 0);
+                int newChanges = entry.changes + (isChange ? 1 : 0);
 
                 State nextState = new State(edge.getDestination(), edge.getLine());
-                double newTime = currentTime + stepCost;
+                PQEntry nextEntry = new PQEntry(newTime, newChanges, nextState);
+                PQEntry currentBest = best.get(nextState);
 
-                if (newTime < bestTime.getOrDefault(nextState, Double.POSITIVE_INFINITY)) {
-                    bestTime.put(nextState, newTime);
+                if (currentBest == null || nextEntry.compareTo(currentBest) < 0) {
+                    best.put(nextState, nextEntry);
                     previous.put(nextState, new PreviousStep(current, edge));
-                    queue.add(new PQEntry(newTime, nextState));
+                    queue.add(nextEntry);
                 }
             }
         }
@@ -145,23 +145,29 @@ public class ShortestTimeRouter {
     private static final class PQEntry implements Comparable<PQEntry> {
         final double time;
         final State state;
+        final int changes;
 
         /**
          * Create a PQEntry.
          * @param time the cumulative journey time to reach this state.
+         * @param changes the cumulative number of line changes to reach this state.
          * @param state the state reached.
          */
-        PQEntry(double time, State state) {
+        PQEntry(double time, int changes, State state) {
             this.time = time;
+            this.changes = changes;
             this.state = state;
         }
 
         /**
          * Order by ascending journey time for use in a min-heap.
+         * Secondarily uses number of changes as a tie breaker.
          */
         @Override
         public int compareTo(PQEntry other) {
-            return Double.compare(this.time, other.time);
+            int byTime = Double.compare(this.time, other.time);
+            if (byTime != 0) return byTime;
+            return Integer.compare(this.changes, other.changes);
         }
     }
 }

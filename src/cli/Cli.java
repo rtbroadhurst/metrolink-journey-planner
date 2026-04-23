@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import model.Network;
 import model.Station;
+import routing.FewestChangesRouter;
 import routing.Route;
 import routing.ShortestTimeRouter;
 
@@ -28,9 +29,7 @@ public class Cli {
     public void run() {
         Station start = getStation("Enter start station: ");
         Station end = getStation("Enter end station: ");
-
-        ShortestTimeRouter shortestTimeRouter = new ShortestTimeRouter(network);
-        Route route = shortestTimeRouter.findRoute(start, end);
+        Route route = getRouter().findRoute(start, end);
 
         if (route == null) {
             System.out.println("No route found");
@@ -38,6 +37,25 @@ public class Cli {
         }
 
         System.out.println(route);
+    }
+
+    private interface Router {
+        Route findRoute(Station start, Station end);
+    }
+
+    private Router getRouter() {
+        System.out.println("Choose routing option:");
+        System.out.println("  1. Shortest time");
+        System.out.println("  2. Fewest changes");
+        while (true) {
+            System.out.print("Enter 1 or 2: ");
+            String input = scanner.nextLine().trim();
+            switch (input) {
+                case "1": return new ShortestTimeRouter(network)::findRoute;
+                case "2": return new FewestChangesRouter(network)::findRoute;
+                default: System.out.println("Please enter 1 or 2.");
+            }
+        }
     }
 
     /**

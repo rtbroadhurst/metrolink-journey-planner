@@ -111,6 +111,7 @@ public class Gui {
             return;
         }
 
+
         Router router;
 
         if (fastest.isSelected()) {
@@ -122,8 +123,12 @@ public class Gui {
         }
 
         Route route = router.findRoute(fromStation, toStation);
-        outputText.setText(route.toString());
+        
+        if (route == null) {
+            outputText.setText("No route found.");
+            return;
+        }
 
-        return;
+        outputText.setText(route.toString());
     }
 }

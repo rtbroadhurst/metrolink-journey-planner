@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
 import cli.Cli;
 import gui.Gui;
 import model.Network;
@@ -35,8 +38,7 @@ public class Main {
         }  
         
         else {
-            Gui gui = new Gui(network);
-            gui.run();
+            SwingUtilities.invokeLater(() -> new Gui(network));
         }
     }
 }

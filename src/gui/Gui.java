@@ -1,9 +1,9 @@
 package gui;
 
-import java.util.Collection;
-
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.util.Collection;
+
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -17,6 +17,10 @@ import javax.swing.JTextArea;
 
 import model.Network;
 import model.Station;
+import routing.FewestChangesRouter;
+import routing.Route;
+import routing.Router;
+import routing.ShortestTimeRouter;
 
 public class Gui {
     private Network network;
@@ -25,6 +29,7 @@ public class Gui {
     private JComboBox<Station> to;
     private JRadioButton fastest;
     private JRadioButton fewest;
+    private JTextArea outputText;
 
     public Gui(Network network) {
         this.network = network;
@@ -82,16 +87,43 @@ public class Gui {
         mainPanel.add(panelSearchButton);
 
         JButton search = new JButton("Search");
+        search.addActionListener(e -> search());
         panelSearchButton.add(search);
+        
 
         // Setup output area.
         JScrollPane outputPane = new JScrollPane(); 
         frame.add(outputPane, BorderLayout.CENTER);
 
-        JTextArea outputText = new JTextArea();
+        outputText = new JTextArea();
         outputPane.setViewportView(outputText);
         outputText.setEditable(false);
-        
+
         frame.setVisible(true);
+    }
+
+    private void search() {
+        Station fromStation = (Station) from.getSelectedItem();
+        Station toStation = (Station) to.getSelectedItem();
+
+        if (fromStation.equals(toStation)) {
+            outputText.setText("Stations cannot be the same.");
+            return;
+        }
+
+        Router router;
+
+        if (fastest.isSelected()) {
+            router = new ShortestTimeRouter(network); 
+        }
+
+        else {
+            router = new FewestChangesRouter(network);
+        }
+
+        Route route = router.findRoute(fromStation, toStation);
+        outputText.setText(route.toString());
+
+        return;
     }
 }

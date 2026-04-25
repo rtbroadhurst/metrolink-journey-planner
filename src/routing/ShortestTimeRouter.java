@@ -15,7 +15,7 @@ import model.Station;
  * Finds the shortest-time route between two stations using Dijkstra's algorithm.
  * A 2-minute penalty is applied at each line change.
  */
-public class ShortestTimeRouter {
+public class ShortestTimeRouter implements Router {
     private static final double CHANGE_PENALTY_MINS = 2.0;
 
     private final Network network;

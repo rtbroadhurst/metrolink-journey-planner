@@ -15,7 +15,7 @@ import model.Station;
  * Finds the fewest-changes route between two stations using Dijkstra's algorithm.
  * A 2-minute penalty is applied at each line change.
  */
-public class FewestChangesRouter {
+public class FewestChangesRouter implements Router {
     private static final double CHANGE_PENALTY_MINS = 2.0;
 
     private final Network network;

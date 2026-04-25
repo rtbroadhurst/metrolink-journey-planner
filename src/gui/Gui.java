@@ -1,5 +1,9 @@
 package gui;
 
+import java.util.Collection;
+
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -8,12 +12,19 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import model.Network;
+import model.Station;
 
 public class Gui {
     private Network network;
     private JFrame frame;
+    private JComboBox<Station> from;
+    private JComboBox<Station> to;
+    private JRadioButton fastest;
+    private JRadioButton fewest;
 
     public Gui(Network network) {
         this.network = network;
@@ -27,11 +38,13 @@ public class Gui {
         frame.setSize(600, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        frame.setLayout(new BorderLayout());
 
-        // Setup a main panel
+        // Setup main panel at the top.
         JPanel mainPanel = new JPanel();
-        frame.add(mainPanel);
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        frame.add(mainPanel, BorderLayout.NORTH);
+
 
         // Setup router selection.
         JPanel panelRadioButtons = new JPanel();
@@ -39,9 +52,9 @@ public class Gui {
 
         JLabel labelRadio = new JLabel("Select routing type:");
         panelRadioButtons.add(labelRadio);
-        
-        JRadioButton fastest = new JRadioButton("Shortest time", true);  
-        JRadioButton fewest  = new JRadioButton("Fewest changes");
+
+        fastest = new JRadioButton("Shortest time", true);
+        fewest = new JRadioButton("Fewest changes");
         panelRadioButtons.add(fastest);
         panelRadioButtons.add(fewest);
 
@@ -53,12 +66,15 @@ public class Gui {
         JPanel panelStationSelection = new JPanel();
         mainPanel.add(panelStationSelection);
 
-        JLabel labelStationSelection = new JLabel("Select which stations you want to go between");
-        panelStationSelection.add(labelStationSelection);
+        Collection<Station> stations = network.getAllStations();
 
-        JComboBox<String> from = new JComboBox<>(); 
-        JComboBox<String> to = new JComboBox<>(); 
+        from = new JComboBox<>(stations.toArray(new Station[0]));
+        to = new JComboBox<>(stations.toArray(new Station[0]));
+
+        panelStationSelection.setLayout(new GridLayout(2, 2, 5, 5));
+        panelStationSelection.add(new JLabel("From:"));
         panelStationSelection.add(from);
+        panelStationSelection.add(new JLabel("To:"));
         panelStationSelection.add(to);
 
         // Setup search button.
@@ -68,6 +84,14 @@ public class Gui {
         JButton search = new JButton("Search");
         panelSearchButton.add(search);
 
+        // Setup output area.
+        JScrollPane outputPane = new JScrollPane(); 
+        frame.add(outputPane, BorderLayout.CENTER);
+
+        JTextArea outputText = new JTextArea();
+        outputPane.setViewportView(outputText);
+        outputText.setEditable(false);
+        
         frame.setVisible(true);
     }
 }

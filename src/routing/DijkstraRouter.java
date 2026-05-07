@@ -1,5 +1,6 @@
 package routing;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -12,33 +13,58 @@ import model.Network;
 import model.Station;
 
 /**
- * Finds the fewest-changes route between two stations using Dijkstra's algorithm.
- * A 2-minute penalty is applied at each line change.
+ * Finds a route between two stations using Dijkstra's algorithm.
+ * Optimises for either shortest time or fewest changes.
  */
-public class FewestChangesRouter implements Router {
+public class DijkstraRouter {
+
     private static final double CHANGE_PENALTY_MINS = 2.0;
 
+    public enum Mode {
+        SHORTEST_TIME,
+        FEWEST_CHANGES
+    }
+
     private final Network network;
+    private final Mode mode;
+
+    private static final Comparator<PQEntry> BY_TIME =
+        (a, b) -> {
+            int byTime = Double.compare(a.time, b.time);
+            if (byTime != 0) return byTime;
+            return Integer.compare(a.changes, b.changes);
+        };
+
+    private static final Comparator<PQEntry> BY_CHANGES =
+        (a, b) -> {
+            int byChanges = Integer.compare(a.changes, b.changes);
+            if (byChanges != 0) return byChanges;
+            return Double.compare(a.time, b.time);
+        };
 
     /**
-     * Create a FewestChangesRouter operating on the given network.
+     * Create a DijkstraRouter operating on a given network, and with a given mode.
      * @param network the network to route over.
+     * @param mode the mode of routing: SHORTEST_TIME, or FEWEST_CHANGES.
      */
-    public FewestChangesRouter(Network network) {
+    public DijkstraRouter(Network network, Mode mode) {
         this.network = network;
+        this.mode = mode;
     }
 
     /**
-     * Find the fewest-changes route between two stations.
+     * Find a route between two stations.
+     * Search for either the shortest-time, or the fewest-changes depending on the mode.
      * Returns null if no route exists.
      * @param start the starting station.
      * @param end the destination station.
-     * @return the fewest-changes Route, or null if unreachable.
+     * @return the route or null if unreachable.
      */
     public Route findRoute(Station start, Station end) {
         Map<State, PQEntry> best = new HashMap<>();
         Map<State, PreviousStep> previous = new HashMap<>();
-        PriorityQueue<PQEntry> queue = new PriorityQueue<>();
+        Comparator<PQEntry> comparator = (mode == Mode.FEWEST_CHANGES) ? BY_CHANGES : BY_TIME;
+        PriorityQueue<PQEntry> queue = new PriorityQueue<>(comparator);
 
         State startState = new State(start, null);
         PQEntry startEntry = new PQEntry(0.0, 0, startState);
@@ -53,7 +79,7 @@ public class FewestChangesRouter implements Router {
                 return reconstruct(current, previous);
             }
 
-            if (entry.compareTo(best.get(current)) > 0) {
+            if (comparator.compare(entry, best.get(current)) > 0) {
                 continue;
             }
 
@@ -66,7 +92,7 @@ public class FewestChangesRouter implements Router {
                 PQEntry nextEntry = new PQEntry(newTime, newChanges, nextState);
                 PQEntry currentBest = best.get(nextState);
 
-                if (currentBest == null || nextEntry.compareTo(currentBest) < 0) {
+                if (currentBest == null || comparator.compare(nextEntry, currentBest) < 0) {
                     best.put(nextState, nextEntry);
                     previous.put(nextState, new PreviousStep(current, edge));
                     queue.add(nextEntry);
@@ -89,21 +115,6 @@ public class FewestChangesRouter implements Router {
             current = step.previousState;
         }
         return new Route(edges);
-    }
-
-    private static final class PreviousStep {
-        final State previousState;
-        final Edge edge;
-
-        /**
-         * Create a PreviousStep.
-         * @param previousState the state before this step.
-         * @param edge the edge traversed to reach the current state.
-         */
-        PreviousStep(State previousState, Edge edge) {
-            this.previousState = previousState;
-            this.edge = edge;
-        }
     }
 
     private static final class State {
@@ -142,7 +153,22 @@ public class FewestChangesRouter implements Router {
         }
     }
 
-    private static final class PQEntry implements Comparable<PQEntry> {
+    private static final class PreviousStep {
+        final State previousState;
+        final Edge edge;
+
+        /**
+         * Create a PreviousStep.
+         * @param previousState the state before this step.
+         * @param edge the edge traversed to reach the current state.
+         */
+        PreviousStep(State previousState, Edge edge) {
+            this.previousState = previousState;
+            this.edge = edge;
+        }
+    }
+
+    private static final class PQEntry {
         final double time;
         final State state;
         final int changes;
@@ -158,16 +184,7 @@ public class FewestChangesRouter implements Router {
             this.changes = changes;
             this.state = state;
         }
-
-        /**
-         * Order by ascending number of changes for use in a min-heap.
-         * Secondarily uses journey time as a tiebreaker.
-         */
-        @Override
-        public int compareTo(PQEntry other) {
-            int byChanges = Integer.compare(this.changes, other.changes);
-            if (byChanges != 0) return byChanges;
-            return Double.compare(this.time, other.time);
-        }
-    }
+    }   
 }
+
+

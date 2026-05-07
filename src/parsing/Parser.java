@@ -1,11 +1,11 @@
 package parsing;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.io.IOException;
 import java.util.List;
 
-import model.*;
+import model.Network;
 
 
 /**

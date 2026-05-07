@@ -5,8 +5,8 @@ import java.util.Scanner;
 import model.Network;
 import model.Station;
 import routing.DijkstraRouter;
-import routing.Route;
 import routing.DijkstraRouter.Mode;
+import routing.Route;
 
 /**
  * Command Line Interface for the program.
@@ -14,7 +14,7 @@ import routing.DijkstraRouter.Mode;
 public class Cli {
     private final Network network;
     private final Scanner scanner = new Scanner(System.in);
-    
+
     /**
      * Constructor for Cli.
      * @param network the network that the Cli is operating on.
@@ -27,18 +27,30 @@ public class Cli {
      * Run the Cli.
      */
     public void run() {
-        Station start = getStation("Enter start station: ");
-        Station end = getStation("Enter end station: ");
-        Route route = getRouter().findRoute(start, end);
+        while (true) {
+            Station start = getStation("Enter start station: ");
+            Station end = getStation("Enter end station: ");
 
-        if (route == null) {
-            System.out.println("No route found");
-            return;
+            if (start.equals(end)) {
+                System.err.println("Start and end station cannot be the same.");
+            } else {
+                Route route = getRouter().findRoute(start, end);
+
+                if (route == null) {
+                    System.out.println("No route found.");
+                    return;
+                }
+
+                System.out.println(route);
+                return;
+            }
         }
-
-        System.out.println(route);
     }
 
+    /**
+     * Prompt the user to choose a routing mode.
+     * @return a DijkstraRouter configured with the chosen mode.
+     */
     private DijkstraRouter getRouter() {
         System.out.println("Choose routing option:");
         System.out.println("  1. Shortest time");
@@ -73,4 +85,3 @@ public class Cli {
         }
     }
 }
-

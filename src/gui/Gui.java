@@ -17,11 +17,9 @@ import javax.swing.JTextArea;
 
 import model.Network;
 import model.Station;
-import routing.FewestChangesRouter;
+import routing.DijkstraRouter;
 import routing.Route;
-import routing.Router;
-import routing.ShortestTimeRouter;
-
+import routing.DijkstraRouter.Mode;
 
 /**
  * Swing GUI for the journey planner.
@@ -133,21 +131,19 @@ public class Gui {
     private void search() {
         Station fromStation = (Station) from.getSelectedItem();
         Station toStation = (Station) to.getSelectedItem();
+        DijkstraRouter router = null;
 
         if (fromStation.equals(toStation)) {
             outputText.setText("Stations cannot be the same.");
             return;
         }
 
-
-        Router router;
-
         if (fastest.isSelected()) {
-            router = new ShortestTimeRouter(network); 
+            router = new DijkstraRouter(network, Mode.SHORTEST_TIME); 
         }
 
         else {
-            router = new FewestChangesRouter(network);
+            router = new DijkstraRouter(network, Mode.FEWEST_CHANGES);
         }
 
         Route route = router.findRoute(fromStation, toStation);

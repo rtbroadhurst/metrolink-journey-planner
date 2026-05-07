@@ -22,6 +22,11 @@ import routing.Route;
 import routing.Router;
 import routing.ShortestTimeRouter;
 
+
+/**
+ * Swing GUI for the journey planner.
+ * Builds the main window with controls for selecting routing mode, and start/end stations.
+ */
 public class Gui {
     private Network network;
     private JFrame frame;
@@ -36,6 +41,9 @@ public class Gui {
         this.frame = new JFrame("Journey Planner");
     }
 
+    /**
+     * Orchestrates the construction of the GUI and shows the window.
+     */
     public void run() {
         setupFrame();
         JPanel mainPanel = setupMainPanel();
@@ -94,6 +102,7 @@ public class Gui {
         panelStationSelection.add(to);
     }
 
+    
     private void setupSearchButton(JPanel mainPanel) {
         JPanel panelSearchButton = new JPanel();
         mainPanel.add(panelSearchButton);
@@ -103,6 +112,9 @@ public class Gui {
         panelSearchButton.add(search);
     }
 
+    /**
+     * Builds the scrollable output area used to display routes/messages.
+     */
     private void setupOutputArea() {
         JScrollPane outputPane = new JScrollPane(); 
         frame.add(outputPane, BorderLayout.CENTER);
@@ -112,6 +124,12 @@ public class Gui {
         outputText.setEditable(false);
     }
 
+    /**
+     * Handles a click of the search button.
+     * Reads the users station and routing type selections,
+     * passes it on to the appropriate Router, and displays the resulting Route.
+     * Displays an error if start and end stations are the same.
+     */
     private void search() {
         Station fromStation = (Station) from.getSelectedItem();
         Station toStation = (Station) to.getSelectedItem();

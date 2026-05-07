@@ -4,9 +4,9 @@ import java.util.Scanner;
 
 import model.Network;
 import model.Station;
-import routing.FewestChangesRouter;
+import routing.DijkstraRouter;
 import routing.Route;
-import routing.ShortestTimeRouter;
+import routing.DijkstraRouter.Mode;
 
 /**
  * Command Line Interface for the program.
@@ -39,11 +39,7 @@ public class Cli {
         System.out.println(route);
     }
 
-    private interface Router {
-        Route findRoute(Station start, Station end);
-    }
-
-    private Router getRouter() {
+    private DijkstraRouter getRouter() {
         System.out.println("Choose routing option:");
         System.out.println("  1. Shortest time");
         System.out.println("  2. Fewest changes");
@@ -51,8 +47,8 @@ public class Cli {
             System.out.print("Enter 1 or 2: ");
             String input = scanner.nextLine().trim();
             switch (input) {
-                case "1": return new ShortestTimeRouter(network)::findRoute;
-                case "2": return new FewestChangesRouter(network)::findRoute;
+                case "1": return new DijkstraRouter(network, Mode.SHORTEST_TIME);
+                case "2": return new DijkstraRouter(network, Mode.FEWEST_CHANGES);
                 default: System.out.println("Please enter 1 or 2.");
             }
         }

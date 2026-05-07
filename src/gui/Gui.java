@@ -34,24 +34,34 @@ public class Gui {
     public Gui(Network network) {
         this.network = network;
         this.frame = new JFrame("Journey Planner");
-
-        run();
     }
 
     public void run() {
-        // Setup frame.
-        frame.setSize(600, 400);
+        setupFrame();
+        JPanel mainPanel = setupMainPanel();
+        setupRouterSelection(mainPanel);
+        setupStationSelection(mainPanel);
+        setupSearchButton(mainPanel);
+        setupOutputArea();
+        
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+
+    private void setupFrame() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         frame.setLayout(new BorderLayout());
+    }
 
-        // Setup main panel at the top.
+    private JPanel setupMainPanel() {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         frame.add(mainPanel, BorderLayout.NORTH);
+        return mainPanel;
+    }
 
-
-        // Setup router selection.
+    private void setupRouterSelection(JPanel mainPanel) {
         JPanel panelRadioButtons = new JPanel();
         mainPanel.add(panelRadioButtons);
 
@@ -66,8 +76,9 @@ public class Gui {
         ButtonGroup group = new ButtonGroup();
         group.add(fastest);
         group.add(fewest);
+    }
 
-        // Setup stations selection.
+    private void setupStationSelection(JPanel mainPanel) {
         JPanel panelStationSelection = new JPanel();
         mainPanel.add(panelStationSelection);
 
@@ -81,25 +92,24 @@ public class Gui {
         panelStationSelection.add(from);
         panelStationSelection.add(new JLabel("To:"));
         panelStationSelection.add(to);
+    }
 
-        // Setup search button.
+    private void setupSearchButton(JPanel mainPanel) {
         JPanel panelSearchButton = new JPanel();
         mainPanel.add(panelSearchButton);
 
         JButton search = new JButton("Search");
         search.addActionListener(e -> search());
         panelSearchButton.add(search);
-        
+    }
 
-        // Setup output area.
+    private void setupOutputArea() {
         JScrollPane outputPane = new JScrollPane(); 
         frame.add(outputPane, BorderLayout.CENTER);
 
-        outputText = new JTextArea();
+        outputText = new JTextArea(20, 50);
         outputPane.setViewportView(outputText);
         outputText.setEditable(false);
-
-        frame.setVisible(true);
     }
 
     private void search() {

@@ -128,7 +128,7 @@ public class Gui {
      * Handles a click of the search button.
      * Reads the users station and routing type selections,
      * passes it on to the appropriate Router, and displays the resulting Route.
-     * Displays an error if start and end stations are the same.
+     * Displays an error if start and end stations are the same, or no route can be found.
      */
     private void search() {
         Station fromStation = (Station) from.getSelectedItem();

@@ -4,19 +4,22 @@ import java.util.List;
 
 import model.Edge;
 import model.Line;
+import routing.DijkstraRouter.Mode;
 
 /**
  * Represents a route through the Metrolink network as a list of edges.
  */
 public class Route {
     private final List<Edge> edges;
+    private final Mode routeType;
 
     /**
      * Create a Route object from a list of edges.
      * @param edges the list of edges that make up the route.
      */
-    public Route(List<Edge> edges) {
+    public Route(List<Edge> edges, Mode routeType) {
         this.edges = edges;
+        this.routeType = routeType;
     }
 
     /**
@@ -70,6 +73,16 @@ public class Route {
         Line previousLine = null;
         String string = "";
         
+        if (routeType == Mode.FEWEST_CHANGES) {
+            string = string + "*** Fewest Changes Route ***";
+        }
+
+        else {
+            string = string + "*** Shortest Time Route ***";
+        }
+
+        string = string + "\n";
+
         for (Edge edge : edges) {
             if (previousLine != null && !edge.getLine().equals(previousLine)) {
                 string = string + edge.getSource().getName() + " on " + previousLine.getName() + " line" + "\n";

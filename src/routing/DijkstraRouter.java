@@ -114,7 +114,7 @@ public class DijkstraRouter {
             edges.addFirst(step.edge);
             current = step.previousState;
         }
-        return new Route(edges);
+        return new Route(edges, mode);
     }
 
     private static final class State {

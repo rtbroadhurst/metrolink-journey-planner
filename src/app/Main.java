@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import cli.Cli;
@@ -22,7 +21,6 @@ public class Main {
         Path csv = Paths.get("data/Metrolink_times_linecolour.csv");
         Network network = new Network();
 
-        // Parse the csv.
         try {
             Parser.load(csv, network);
 
@@ -31,14 +29,13 @@ public class Main {
             System.exit(1);
         }
 
-        // Runs the CLI if the user inputs 'cli' as an argument
         if (args.length > 0 && args[0].equals("cli")) {
             Cli cli = new Cli(network);
             cli.run();
         }  
         
         else {
-            SwingUtilities.invokeLater(() -> new Gui(network));
+            SwingUtilities.invokeLater(() -> new Gui(network).run());
         }
     }
 }

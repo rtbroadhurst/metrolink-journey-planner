@@ -1,6 +1,8 @@
 # metrolink-journey-planner
 Java route planner for the Manchester Metrolink.
 
+[![CI](https://github.com/rtbroadhurst/metrolink-journey-planner/actions/workflows/ci.yml/badge.svg)](https://github.com/rtbroadhurst/metrolink-journey-planner/actions/workflows/ci.yml)
+
 ![Journey planner GUI](docs/screenshot.png)
 
 ## How to run

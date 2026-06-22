@@ -19,3 +19,7 @@ java -cp out app.Main
 java -cp out app.Main cli
 ```
 
+**Tests:**
+```bash
+bash run-tests.sh
+```

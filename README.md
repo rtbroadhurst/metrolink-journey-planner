@@ -1,6 +1,8 @@
 # metrolink-journey-planner
 Java route planner for the Manchester Metrolink.
 
+![Journey planner GUI](docs/screenshot.png)
+
 ## How to run
 **Compile:**
 ```bash

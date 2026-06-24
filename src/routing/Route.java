@@ -42,7 +42,7 @@ public class Route {
             total += edge.getTime();
         }
 
-        total += countChanges() * 2;
+        total += countChanges() * DijkstraRouter.CHANGE_PENALTY_MINS;
         return total;
     }
 

@@ -18,7 +18,7 @@ import model.Station;
  */
 public class DijkstraRouter {
 
-    private static final double CHANGE_PENALTY_MINS = 2.0;
+    static final double CHANGE_PENALTY_MINS = 2.0;
 
     public enum Mode {
         SHORTEST_TIME,

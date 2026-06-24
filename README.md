@@ -83,8 +83,6 @@ The harder objective is "fewest changes". A naive Dijkstra over stations cannot 
 4. **Correctness**
    - Every edge weight and the change penalty are non-negative, so Dijkstra's optimality guarantee holds for both objectives
 
-The implementation uses lazy deletion (stale priority-queue entries are skipped when popped) to avoid the cost of a decrease-key operation.
-
 ## Data format
 
 Each CSV is an ordered list of rows. A single-value row names a line; the rows beneath it, until the next line name, are that line's consecutive stops:

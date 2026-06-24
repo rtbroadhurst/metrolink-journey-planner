@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/rtbroadhurst/metrolink-journey-planner/actions/workflows/ci.yml/badge.svg)](https://github.com/rtbroadhurst/metrolink-journey-planner/actions/workflows/ci.yml)
 
-A Java route planner for the Manchester Metrolink tram network. Given a start and destination, it finds either the route with the **shortest time** or the route with the **fewest line changes**, using a variant of Dijkstra's algorithm over a graph of the network. It runs as either a Swing GUI or a command line tool.
+A Java route planner for the Manchester Metrolink tram network. Given a start and destination, it finds either the route with the **shortest time** or the route with the **fewest line changes**, using a variant of Dijkstra's algorithm over a graph of the network. It runs as either a Swing GUI or a command line tool. This was completed originally as coursework.
 
 ![Journey planner GUI](docs/screenshot.png)
 
